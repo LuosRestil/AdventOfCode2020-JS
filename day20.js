@@ -1848,11 +1848,9 @@ for (let line of input) {
 }
 tiles.push(tile);
 
-let bordermap = new Map();
-let tileCount = 0;
-for (let tile of tiles) {
-  tileCount++;
-  tile = tile.slice(1);
+tiles = tiles.map((tile) => {
+  let id = tile[0].split(" ")[1];
+  id = id.slice(0, id.length - 1);
   let tb = tile[0];
   let bb = tile[tile.length - 1];
   let lb = "";
@@ -1861,11 +1859,21 @@ for (let tile of tiles) {
     lb += row[0];
     rb += row[row.length - 1];
   }
+  return {
+    id,
+    tb,
+    bb,
+    lb,
+    rb,
+  };
+});
 
-  let tbr = tb.split("").reverse().join("");
-  let bbr = bb.split("").reverse().join("");
-  let lbr = lb.split("").reverse().join("");
-  let rbr = rb.split("").reverse().join("");
+let bordermap = new Map();
+for (let tile of tiles) {
+  let tbr = tile.tb.split("").reverse().join("");
+  let bbr = tile.bb.split("").reverse().join("");
+  let lbr = tile.lb.split("").reverse().join("");
+  let rbr = tile.rb.split("").reverse().join("");
 
   if (bordermap.has(tb)) {
     bordermap.set(tb, bordermap.get(tb) + 1);
@@ -1999,16 +2007,4 @@ function flipTileVertical(tile) {
   let tileCopy = [...tile];
   tileCopy.reverse();
   return tileCopy;
-}
-
-let testTile = ["..#..", ".....", "#####", "##..#", "#####"];
-for (let line of testTile) {
-  console.log(line);
-}
-
-console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-
-let newTile = flipTileHorizontal(testTile);
-for (let line of newTile) {
-  console.log(line);
 }

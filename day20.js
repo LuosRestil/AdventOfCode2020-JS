@@ -1851,22 +1851,26 @@ tiles.push(tile);
 tiles = tiles.map((tile) => {
   let id = tile[0].split(" ")[1];
   id = id.slice(0, id.length - 1);
-  let tb = tile[0];
-  let bb = tile[tile.length - 1];
+  let content = tile.slice(1);
+  let tb = content[0];
+  let bb = content[content.length - 1];
   let lb = "";
   let rb = "";
-  for (let row of tile) {
+  for (let row of content) {
     lb += row[0];
     rb += row[row.length - 1];
   }
   return {
     id,
+    content,
     tb,
     bb,
     lb,
     rb,
   };
 });
+
+console.log(tiles);
 
 let bordermap = new Map();
 for (let tile of tiles) {
@@ -1875,36 +1879,36 @@ for (let tile of tiles) {
   let lbr = tile.lb.split("").reverse().join("");
   let rbr = tile.rb.split("").reverse().join("");
 
-  if (bordermap.has(tb)) {
-    bordermap.set(tb, bordermap.get(tb) + 1);
+  if (bordermap.has(tile.tb)) {
+    bordermap.set(tile.tb, bordermap.get(tile.tb) + 1);
   } else if (bordermap.has(tbr)) {
     bordermap.set(tbr, bordermap.get(tbr) + 1);
   } else {
-    bordermap.set(tb, 1);
+    bordermap.set(tile.tb, 1);
   }
 
-  if (bordermap.has(bb)) {
-    bordermap.set(bb, bordermap.get(bb) + 1);
+  if (bordermap.has(tile.bb)) {
+    bordermap.set(tile.bb, bordermap.get(tile.bb) + 1);
   } else if (bordermap.has(bbr)) {
     bordermap.set(bbr, bordermap.get(bbr) + 1);
   } else {
-    bordermap.set(bb, 1);
+    bordermap.set(tile.bb, 1);
   }
 
-  if (bordermap.has(lb)) {
-    bordermap.set(lb, bordermap.get(lb) + 1);
+  if (bordermap.has(tile.lb)) {
+    bordermap.set(tile.lb, bordermap.get(tile.lb) + 1);
   } else if (bordermap.has(lbr)) {
     bordermap.set(lbr, bordermap.get(lbr) + 1);
   } else {
-    bordermap.set(lb, 1);
+    bordermap.set(tile.lb, 1);
   }
 
-  if (bordermap.has(rb)) {
-    bordermap.set(rb, bordermap.get(rb) + 1);
+  if (bordermap.has(tile.rb)) {
+    bordermap.set(tile.rb, bordermap.get(tile.rb) + 1);
   } else if (bordermap.has(rbr)) {
     bordermap.set(rbr, bordermap.get(rbr) + 1);
   } else {
-    bordermap.set(rb, 1);
+    bordermap.set(tile.rb, 1);
   }
 }
 
@@ -1912,75 +1916,44 @@ let idProduct = 1;
 
 for (let tile of tiles) {
   let sharedSides = 0;
-  let id = tile[0].split(" ")[1];
-  id = parseInt(id.slice(0, id.length - 1));
-  tile = tile.slice(1);
-  let tb = tile[0];
-  let bb = tile[tile.length - 1];
-  let lb = "";
-  let rb = "";
-  for (let row of tile) {
-    lb += row[0];
-    rb += row[row.length - 1];
-  }
 
-  let tbr = tb.split("").reverse().join("");
-  let bbr = bb.split("").reverse().join("");
-  let lbr = lb.split("").reverse().join("");
-  let rbr = rb.split("").reverse().join("");
+  let tbr = tile.tb.split("").reverse().join("");
+  let bbr = tile.bb.split("").reverse().join("");
+  let lbr = tile.lb.split("").reverse().join("");
+  let rbr = tile.rb.split("").reverse().join("");
 
-  if (bordermap.has(tb) && bordermap.get(tb) > 1) {
+  if (bordermap.has(tile.tb) && bordermap.get(tile.tb) > 1) {
     sharedSides++;
   }
   if (bordermap.has(tbr) && bordermap.get(tbr) > 1) {
     sharedSides++;
   }
-  if (bordermap.has(bb) && bordermap.get(bb) > 1) {
+  if (bordermap.has(tile.bb) && bordermap.get(tile.bb) > 1) {
     sharedSides++;
   }
   if (bordermap.has(bbr) && bordermap.get(bbr) > 1) {
     sharedSides++;
   }
-  if (bordermap.has(lb) && bordermap.get(lb) > 1) {
+  if (bordermap.has(tile.lb) && bordermap.get(tile.lb) > 1) {
     sharedSides++;
   }
   if (bordermap.has(lbr) && bordermap.get(lbr) > 1) {
     sharedSides++;
   }
-  if (bordermap.has(rb) && bordermap.get(rb) > 1) {
+  if (bordermap.has(tile.rb) && bordermap.get(tile.rb) > 1) {
     sharedSides++;
   }
   if (bordermap.has(rbr) && bordermap.get(rbr) > 1) {
     sharedSides++;
   }
   if (sharedSides === 2) {
-    idProduct *= id;
+    idProduct *= tile.id;
   }
 }
 
 console.log(`Answer: ${idProduct}`);
 
-/*
-break input into an array of tile objects
-each object has
-{
-  id: the tile's id number
-  edges: [
-    {
-      top: tile top edge,
-      bottom: tile bottom edge,
-      left: tile left edge,
-      right: tile right edge
-    }
-  ],
-  connectsTo: [
-    top: tile above,
-    bottom: tile below
-    left: tile left,
-    right: tile right
-  ]
-}
-*/
+// ************************************************************************************
 
 function rotateTile(tile) {
   let newTile = [];
@@ -2007,4 +1980,12 @@ function flipTileVertical(tile) {
   let tileCopy = [...tile];
   tileCopy.reverse();
   return tileCopy;
+}
+
+let image = [];
+for (let i = 0; i < Math.sqrt(input.length); i++) {
+  let row = [];
+  for (let j = 0; j < Math.sqrt(input.length); j++) {
+    row.push(0);
+  }
 }
